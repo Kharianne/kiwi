@@ -1,13 +1,13 @@
-import api_calling as ap
+import helper
 import urllib3
 
 
-config = ap.read_configuration('book_flight.ini')
-passenger = ap.read_configuration('passenger.ini')
-passenger_dict = ap.prepare_passenger(passenger)
-parser = ap.Parser()
+config = helper.read_configuration('book_flight.ini')
+passenger = helper.read_configuration('passenger.ini')
+passenger_dict = helper.prepare_passenger(passenger)
+parser = helper.Parser()
 values = parser.argument_parser()
-validator = ap.Validator(values, config)
+validator = helper.Validator(values, config)
 
 if validator.validate_date() is False:
     print("Invalid date format. Example: YYYY-MM-DD")
@@ -26,7 +26,7 @@ except Exception as e:
     print("Error occurred:", e)
     exit(1)
 
-flight = ap.Flight(values)
+flight = helper.Flight(values)
 
 try:
     booking_token = flight.find_flight(config['Flight_api']['url'])
@@ -35,7 +35,7 @@ try:
         exit(1)
     else:
         try:
-            pnr = ap.Booking(booking_token).make_booking(config['Booking_api']['url'], passenger_dict)
+            pnr = helper.Booking(booking_token).make_booking(config['Booking_api']['url'], passenger_dict)
             print(pnr)
         except urllib3.exceptions.MaxRetryError:
             print("Max retries achieved - probably network error.")
