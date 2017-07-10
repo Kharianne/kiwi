@@ -1,10 +1,10 @@
 # Kiwi Python Weekend
 ## Basics
 This short script looks for:
-* --one-way (default) - it is not necessary to run script with this parameter
-* --return X (X number of days in destination)
-* --cheapest (default) - it is not necessary to run script with this parameter
-* --shortest
+* `--one-way` (default) - it is not necessary to run script with this parameter
+* `--return X` (X number of days in destination)
+* `--cheapest` (default) - it is not necessary to run script with this parameter
+* `--shortest`
 
 flights.
 
