@@ -5,7 +5,8 @@ import re
 import datetime
 import configparser
 
-# For real purpose I would handle this adding certificate verification
+# In real one application, it would be necessary to handle ssl certs,
+# in this example program it is not needed
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
 
@@ -66,8 +67,7 @@ class Validator:
             return False
 
     def iata_validation(self):
-        params = {'api_key': self.config['IATA_validation_api']['api_key'],
-                  'code': self.values['from']}
+        params = {'api_key': self.config['IATA_validation_api']['api_key']}
         http = RequestHelper()
         destinations = [self.values['from'], self.values['to']]
         for destination in destinations:
