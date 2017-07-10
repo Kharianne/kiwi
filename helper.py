@@ -5,6 +5,8 @@ import re
 import datetime
 import configparser
 
+# In real one application, it would be necessary to handle ssl certs,
+# in this example program it is not needed
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
 
@@ -42,10 +44,11 @@ class Parser:
 
 
 class Validator:
-    def __init__(self, values):
+    def __init__(self, values, config):
         self.values = values
+        self.config = config
 
-    def date_validator(self):
+    def validate_date(self):
         date = str(self.values['date'])
         date_pattern = re.compile("^[0-9]{4}-(0[1-9]|1[0-2])-(0[1-9]|[1-2][0-9]|3[0-1])$")
         if date_pattern.match(date) is None:
@@ -63,12 +66,13 @@ class Validator:
         else:
             return False
 
-    def iata_validation(self, url, params):
+    def iata_validation(self):
+        params = {'api_key': self.config['IATA_validation_api']['api_key']}
         http = RequestHelper()
         destinations = [self.values['from'], self.values['to']]
         for destination in destinations:
             params = edit_params(destination, params)
-            response = http.post_request(url, params)
+            response = http.post_request(self.config['IATA_validation_api']['url'], params)
             airport_data = response['response']
             if not airport_data:
                 raise Exception(destination + " is not a valid IATA code")
@@ -102,7 +106,7 @@ class Flight:
     def __init__(self, values):
         self.values = values
 
-    def flight_params_builder(self):
+    def make_flight_params(self):
         url_params = {
             'v': 3,
             'flyFrom': self.values['from'],
@@ -124,7 +128,8 @@ class Flight:
             url_params.update({'sort': 'price'})
         return url_params
 
-    def find_flight(self, url_params, url):
+    def find_flight(self, url):
+        url_params = self.make_flight_params()
         http = RequestHelper()
         response = http.get_request(url, url_params)
         if response["_results"] == 0:
