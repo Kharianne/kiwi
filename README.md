@@ -5,6 +5,7 @@ This short script looks for:
 * --return X
 * --cheapest (default) - it is not necessary to run script with this parameter
 * --shortest
+
 flights.
 
 One-way and return are mutually excluded for program run so as shortest with cheapest.
